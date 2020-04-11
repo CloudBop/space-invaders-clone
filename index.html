@@ -10,21 +10,20 @@
 </head>
 <body>
   <script>
-    console.log('hello world');
-    var screen, input, frames;
+    var screen, input, frames, spFrame, lvFrame;
     var alienSp, shipSp, shieldSp;
     var aliens, dir, ship, bullets, shields;
 
     function main (arguments) {
-      screen = new Screen(510,600);
+      screen = new Screen(502,600);
       input = new InputHandler();
       var img = new Image();
       img.addEventListener("load", function name (argument) {
         // alien sprites, in pairs
         alienSp = [ // img, x, y, w, h
-          [new Sprite(this,  0, 0, 22, 16),new Sprite(this,  0, 16, 22, 16)],
-          [new Sprite(this, 22, 0, 16, 16),new Sprite(this, 22, 16, 16, 16)],
-          [new Sprite(this, 38, 0, 24, 16),new Sprite(this, 38, 16, 24, 16)]
+          [new Sprite(this,  0, 0, 22, 16), new Sprite(this,  0, 16, 22, 16)],
+          [new Sprite(this, 22, 0, 16, 16), new Sprite(this, 22, 16, 16, 16)],
+          [new Sprite(this, 38, 0, 24, 16), new Sprite(this, 38, 16, 24, 16)]
         ]
         //
         shipSp= new Sprite(this, 62, 0, 22, 16);
@@ -36,8 +35,39 @@
       img.src = "res/invaders.png"
     }
 
-    function init (arguments) {
-      
+    function init () {
+      frames=0;
+      spFrame=0;
+      lvFrame=180;
+      dir=1;
+      //
+      ship = {
+        sprite: shipSp,
+        x: (screen.width-shipSp.w)/2,
+        y: screen.height-(30+shipSp.h)
+      }
+      //
+      // store aliens
+      aliens=[];
+      // alien formation pattern
+      var rows = [1,0,0,2,2]
+      for (let i = 0, len=rows.length; i < len; i++) {
+        // const element = array[index];
+        //
+          for (let j = 0; j < 10; j++) {
+            // const element = array[index];
+            var a = rows[i];
+            aliens.push({
+              sprite: alienSp[a],
+              // add 4px to smaller pink sprite.
+              x: 30+j*30 + [0,4,0][a],
+              y: 30+i*30,
+              w: alienSp[a][0].w,
+              h: alienSp[a][0].h
+            })
+            // draw ar 18:38
+          } 
+      }
     }
 
     function run (arguments) {
@@ -50,16 +80,69 @@
       window.requestAnimationFrame(loop, screen.canvas)
     }
 
-    function update (arguments) {
-      
-    }
+    function update () {
+      frames++
+      // SHIP
+      // left
+      if(input.isDown(37)) {
+        ship.x -=4; 
+        // console.log('ship', ship)
+      }
+      // right
+      if(input.isDown(39)) {
+        ship.x += 4;
+        // console.log('ship', ship)
+      }
+      //
+      ship.x = Math.max(Math.min(ship.x, screen.width-(30+shipSp.w)), 30)
 
-    function render (arguments) {
-      // console.log('alienSp', alienSp)
-      screen.drawSprite(alienSp[1][1],10,10)    
+  
+      
+      // ALIENS 
+      // if = every second
+      if (frames % lvFrame===0){
+        //
+        var _max=0, _min= screen.width;
+        //
+        spFrame= (spFrame+1)%2
+        // iterate over aliens
+        for (let i = 0, len=aliens.length; i < len; i++) {
+          var a = aliens[i];
+          // dir = 1 move to right || -1 move to left
+          a.x += 30* dir
+          //
+          _max=Math.max(_max, a.x+a.w);
+          _min=Math.min(_min, a.x);
+        }
+        // move down and change direction,
+        if(_max > screen.width|| _min<30){
+          // invert direction
+          dir *=-1
+          // iterate aliens
+          for (let i = 0, len=aliens.length; i < len; i++) {
+            aliens[i].x += 30 * dir;
+            aliens[i].y += 30;
+          }
+        }
+    }
+  }
+
+    function render () {
+      // refresh screen render
+      screen.clear()
+      //
+      for (let i = 0, len=aliens.length; i < len; i++) {
+        var a = aliens[i];
+        // spFrame 0 || 1 - movement animation
+        screen.drawSprite(a.sprite[spFrame], a.x, a.y);
+        
+      }
+      //
+      screen.drawSprite(ship.sprite, ship.x, ship.y)
     }
     // 
     main();
+    
   </script>
 
 
