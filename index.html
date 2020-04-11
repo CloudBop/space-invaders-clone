@@ -46,8 +46,58 @@
         x: (screen.width-shipSp.w)/2,
         y: screen.height-(30+shipSp.h)
       }
-      // stoe bullets
+      // store bullets
       bullets=[]
+      // store shields
+      shields={
+        canvas:null,
+        y: ship.y-(30+shieldSp.h),
+        h: shieldSp.h,
+        init: function(){
+          this.canvas= document.createElement('canvas');
+          this.canvas.width=screen.width;
+          this.canvas.height=this.h;
+          this.ctx = this.canvas.getContext('2d');
+
+          for(var i=0; i<4; i++) {
+            //(504-60)=444 remove 30 from either side to get width
+            // 444/4 = 111 divide by 4
+            // (111-36)/2 (36=width of shield) =37.5 round up
+            // + 30 for offset
+            this.ctx.drawImage(shieldSp.img, shieldSp.x, shieldSp.y, shieldSp.w, shieldSp.h, 68+111*i,0, shieldSp.w, shieldSp.h)
+          }
+
+        },
+        generateDamage: function(x,y){
+          // round down+*2
+          x= Math.floor(x/2)*2
+          y= Math.floor(y/2)*2
+
+          this.ctx.clearRect(x-2, y-2, 4, 4);
+          this.ctx.clearRect(x+2, y-4, 2, 4);
+          this.ctx.clearRect(x+4, y, 2, 2);
+          this.ctx.clearRect(x+2, y+2, 2, 2);
+          this.ctx.clearRect(x-4, y+2, 2, 2);
+          this.ctx.clearRect(x-6, y, 2, 2);
+          this.ctx.clearRect(x-4, y-4, 2, 2);
+          this.ctx.clearRect(x-2, y-6, 2, 2);
+        },
+        // x,y is screen
+        hits: function(x,y){
+          // get coord of local ctx
+          y-=this.y;
+          // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/getImageData
+          // remove 1px
+          var data = this.ctx.getImageData(x,y,1,1);
+          // transparency layer
+          if(data.data[3]!==0){
+            this.generateDamage(x,y);
+            return true;
+          }
+          return false;
+        }
+      }
+      shields.init();
       // store aliens
       aliens=[];
       // alien formation pattern
@@ -111,6 +161,16 @@
           i--;
           len--;
           continue;
+        }
+        // shield damage
+        var h2 = b.height*0.5;
+        if (shields.y < b.y+h2 && b.y+h2 < shields.y+ shields.h){
+          // if bullet hits shield
+          if(shields.hits(b.x, b.y+h2)){
+            bullets.splice(i,1);
+            i--;
+            len--;
+          }
         }
         //
         for (let j = 0, len2=aliens.length; j < len2; j++) {
@@ -187,6 +247,7 @@
       }
       screen.ctx.restore();
       //
+      screen.ctx.drawImage(shields.canvas, 0, shields.y);
       screen.drawSprite(ship.sprite, ship.x, ship.y);
     }
     // 
