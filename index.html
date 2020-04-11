@@ -101,7 +101,17 @@
         bullets.push(new Bullet(ship.x +10, ship.y, -8, 2, 6, '#fff'));
       }
       for (let i = 0, len=bullets.length; i < len; i++) {
-        bullets[i].update();        
+        //
+        var b= bullets[i];
+        //
+        b.update();
+        // remove bullet to save memory
+        if (b.y+b.height<0||b.y>screen.height) {
+          bullets.splice(i,1);
+          i--;
+          len--;
+          continue;
+        }
       }
       frames++
       // ALIENS 
