@@ -10,12 +10,12 @@
 </head>
 <body>
   <script>
-    var screen, input, frames, spFrame, lvFrame;
+    var display, input, frames, spFrame, lvFrame;
     var alienSp, shipSp, shieldSp;
     var aliens, dir, ship, bullets, shields;
 
     function main (arguments) {
-      screen = new Screen(504,600);
+      display = new Screen(504,600);
       input = new InputHandler();
       var img = new Image();
       img.addEventListener("load", function name (argument) {
@@ -43,8 +43,8 @@
       //
       ship = {
         sprite: shipSp,
-        x: (screen.width-shipSp.w)/2,
-        y: screen.height-(30+shipSp.h)
+        x: (display.width-shipSp.w)/2,
+        y: display.height-(30+shipSp.h)
       }
       // store bullets
       bullets=[]
@@ -55,7 +55,7 @@
         h: shieldSp.h,
         init: function(){
           this.canvas= document.createElement('canvas');
-          this.canvas.width=screen.width;
+          this.canvas.width=display.width;
           this.canvas.height=this.h;
           this.ctx = this.canvas.getContext('2d');
 
@@ -82,7 +82,7 @@
           this.ctx.clearRect(x-4, y-4, 2, 2);
           this.ctx.clearRect(x-2, y-6, 2, 2);
         },
-        // x,y is screen
+        // x,y is display
         hits: function(x,y){
           // get coord of local ctx
           y-=this.y;
@@ -126,9 +126,9 @@
         update();
         render();
         //
-        window.requestAnimationFrame(loop, screen.canvas)
+        window.requestAnimationFrame(loop, display.canvas)
       }
-      window.requestAnimationFrame(loop, screen.canvas)
+      window.requestAnimationFrame(loop, display.canvas)
     }
 
     function update () {
@@ -144,7 +144,7 @@
         // console.log('ship', ship)
       }
       //
-      ship.x = Math.max(Math.min(ship.x, screen.width-(30+shipSp.w)), 30)
+      ship.x = Math.max(Math.min(ship.x, display.width-(30+shipSp.w)), 30)
       
       // BULLET try is down for auto-fire
       if(input.isPressed(32)) {
@@ -156,7 +156,7 @@
         //
         b.update();
         // remove bullet to save memory
-        if (b.y+b.height<0||b.y>screen.height) {
+        if (b.y+b.height<0||b.y>display.height) {
           bullets.splice(i,1);
           i--;
           len--;
@@ -224,7 +224,7 @@
       // ALIENS 
       if (frames % lvFrame===0){ // = every second
         //
-        var _max=0, _min= screen.width;
+        var _max=0, _min= display.width;
         //
         spFrame= (spFrame+1)%2
         // iterate over aliens
@@ -237,7 +237,7 @@
           _min=Math.min(_min, a.x);
         }
         // bounds move down and change direction
-        if(_max > screen.width-30 || _min<30){
+        if(_max > display.width-30 || _min<30){
           // invert direction
           dir *=-1
           // iterate aliens
@@ -250,24 +250,24 @@
   }
 
     function render () {
-      // refresh screen render
-      screen.clear()
+      // refresh display render
+      display.clear()
       //
       for (let i = 0, len=aliens.length; i < len; i++) {
         var a = aliens[i];
         // spFrame 0 || 1 - movement animation
-        screen.drawSprite(a.sprite[spFrame], a.x, a.y);
+        display.drawSprite(a.sprite[spFrame], a.x, a.y);
         
       }
       //
-      screen.ctx.save();
+      display.ctx.save();
       for (let i=0, len=bullets.length;  i < len; i++){
-        screen.drawBullet(bullets[i]); 
+        display.drawBullet(bullets[i]); 
       }
-      screen.ctx.restore();
+      display.ctx.restore();
       //
-      screen.ctx.drawImage(shields.canvas, 0, shields.y);
-      screen.drawSprite(ship.sprite, ship.x, ship.y);
+      display.ctx.drawImage(shields.canvas, 0, shields.y);
+      display.drawSprite(ship.sprite, ship.x, ship.y);
     }
     // 
     main();
