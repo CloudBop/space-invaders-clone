@@ -15,7 +15,7 @@
     var aliens, dir, ship, bullets, shields;
 
     function main (arguments) {
-      screen = new Screen(502,600);
+      screen = new Screen(504,600);
       input = new InputHandler();
       var img = new Image();
       img.addEventListener("load", function name (argument) {
@@ -46,7 +46,8 @@
         x: (screen.width-shipSp.w)/2,
         y: screen.height-(30+shipSp.h)
       }
-      //
+      // stoe bullets
+      bullets=[]
       // store aliens
       aliens=[];
       // alien formation pattern
@@ -99,8 +100,7 @@
   
       
       // ALIENS 
-      // if = every second
-      if (frames % lvFrame===0){
+      if (frames % lvFrame===0){ // = every second
         //
         var _max=0, _min= screen.width;
         //
@@ -114,8 +114,8 @@
           _max=Math.max(_max, a.x+a.w);
           _min=Math.min(_min, a.x);
         }
-        // move down and change direction,
-        if(_max > screen.width|| _min<30){
+        // bounds move down and change direction
+        if(_max > screen.width-30 || _min<30){
           // invert direction
           dir *=-1
           // iterate aliens

@@ -1,5 +1,21 @@
 console.log('helpers.js');
 //
+//
+//
+//
+function Bullet(x, y, vely, w, h, color) {
+  this.x = x;
+  this.y = y;
+  this.vely = vely;
+  this.height = h;
+  this.width = w;
+  this.color = color;
+}
+Bullet.prototype.update = function() {
+  //
+  this.y = this.vely;
+};
+
 //screen
 function Screen(width, height) {
   //
@@ -19,6 +35,13 @@ Screen.prototype.clear = function() {
 
 Screen.prototype.drawSprite = function(sp, x, y) {
   this.ctx.drawImage(sp.img, sp.x, sp.y, sp.w, sp.h, x, y, sp.w, sp.h);
+};
+
+Screen.prototype.drawBullet = function(bullet) {
+  //
+  this.ctx.fillStyle = bullet.color;
+  this.ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+  //
 };
 
 //sprite
