@@ -1,4 +1,4 @@
-console.log('helpers.js');
+// console.log('helpers.js');
 //
 //
 function AABBIntersect(ax, ay, aw, ah, bx, by, bw, bh) {
