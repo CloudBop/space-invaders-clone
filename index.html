@@ -185,6 +185,25 @@
             bullets.splice(i, 1);
             i--
             len--
+            // change speed of alien movmt
+            switch(len2){
+              case 30: {
+                this.lvFrame=40;
+                break;
+              }
+              case 10: {
+                this.lvFrame=20;
+                break;
+              }
+              case 5: {
+                this.lvFrame=15;
+                break;
+              }
+              case 1: {
+                this.lvFrame=6;
+                break;
+              }
+            } 
           }
         }
       }
