@@ -9,8 +9,57 @@
 
 </head>
 <body>
-  <script >
-    alert('hello world');
+  <script>
+    console.log('hello world');
+    var screen, input, frames;
+    var alienSp, shipSp, shieldSp;
+    var aliens, dir, ship, bullets, shields;
+
+    function main (arguments) {
+      screen = new Screen(510,600);
+      input = new InputHandler();
+      var img = new Image();
+      img.addEventListener("load", function name (argument) {
+        // alien sprites, in pairs
+        alienSp = [ // img, x, y, w, h
+          [new Sprite(this,  0, 0, 22, 16),new Sprite(this,  0, 16, 22, 16)],
+          [new Sprite(this, 22, 0, 16, 16),new Sprite(this, 22, 16, 16, 16)],
+          [new Sprite(this, 38, 0, 24, 16),new Sprite(this, 38, 16, 24, 16)]
+        ]
+        //
+        shipSp= new Sprite(this, 62, 0, 22, 16);
+        shieldSp= new Sprite(this, 84, 8, 36, 24);
+        //
+        init();
+        run();
+      })
+      img.src = "res/invaders.png"
+    }
+
+    function init (arguments) {
+      
+    }
+
+    function run (arguments) {
+      var loop = function (arguments) {
+        update();
+        render();
+        //
+        window.requestAnimationFrame(loop, screen.canvas)
+      }
+      window.requestAnimationFrame(loop, screen.canvas)
+    }
+
+    function update (arguments) {
+      
+    }
+
+    function render (arguments) {
+      // console.log('alienSp', alienSp)
+      screen.drawSprite(alienSp[1][1],10,10)    
+    }
+    // 
+    main();
   </script>
 
 
