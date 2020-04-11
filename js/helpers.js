@@ -13,7 +13,7 @@ function Bullet(x, y, vely, w, h, color) {
 }
 Bullet.prototype.update = function() {
   //
-  this.y = this.vely;
+  this.y += this.vely;
 };
 
 //screen

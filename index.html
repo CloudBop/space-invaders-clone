@@ -38,7 +38,7 @@
     function init () {
       frames=0;
       spFrame=0;
-      lvFrame=180;
+      lvFrame=60;
       dir=1;
       //
       ship = {
@@ -82,7 +82,6 @@
     }
 
     function update () {
-      frames++
       // SHIP
       // left
       if(input.isDown(37)) {
@@ -96,9 +95,15 @@
       }
       //
       ship.x = Math.max(Math.min(ship.x, screen.width-(30+shipSp.w)), 30)
-
-  
       
+      // BULLET try is down for auto-fire
+      if(input.isPressed(32)) {
+        bullets.push(new Bullet(ship.x +10, ship.y, -8, 2, 6, '#fff'));
+      }
+      for (let i = 0, len=bullets.length; i < len; i++) {
+        bullets[i].update();        
+      }
+      frames++
       // ALIENS 
       if (frames % lvFrame===0){ // = every second
         //
@@ -138,7 +143,13 @@
         
       }
       //
-      screen.drawSprite(ship.sprite, ship.x, ship.y)
+      screen.ctx.save();
+      for (let i=0, len=bullets.length;  i < len; i++){
+        screen.drawBullet(bullets[i]); 
+      }
+      screen.ctx.restore();
+      //
+      screen.drawSprite(ship.sprite, ship.x, ship.y);
     }
     // 
     main();
